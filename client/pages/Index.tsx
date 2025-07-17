@@ -2,6 +2,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
+import { PhoneCall, CarFront, BadgeDollarSign } from "lucide-react"; // Lucide Icons
 import {
   Dialog,
   DialogContent,
@@ -35,7 +36,7 @@ import {
   Image,
   ExternalLink,
 } from "lucide-react";
-import { useState } from "react";
+import { useState, useEffect  } from "react";
 
 export default function Index() {
   const [formData, setFormData] = useState({
@@ -44,6 +45,25 @@ export default function Index() {
     phone: "",
     message: "",
   });
+
+  const images = [
+    "/images/carousel/img1.jpg",
+    "/images/carousel/img2.jpg",
+    "/images/carousel/img3.jpg",
+    "/images/carousel/img4.jpg",
+    "/images/carousel/img5.jpg",
+  ];
+  const [currentImageIndex, setCurrentImageIndex] = useState(0);
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setCurrentImageIndex((prevIndex) => 
+        prevIndex === images.length - 1 ? 0 : prevIndex + 1
+      );
+    }, 5000);
+    return () => clearInterval(interval);
+  }, [images.length]);
+
 
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [enquireModalOpen, setEnquireModalOpen] = useState(false);
@@ -54,6 +74,14 @@ export default function Index() {
     message: "",
   });
 
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setEnquireModalOpen(true);
+    }, 10000); // 10 seconds = 10000 ms
+
+    return () => clearTimeout(timer); // Clean up on unmount
+  }, []);
+
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setFormData({
       ...formData,
@@ -61,14 +89,24 @@ export default function Index() {
     });
   };
 
+  const [showPopup, setShowPopup] = useState(false);
+
+  
+  const [isLoading, setIsLoading] = useState(false);
+  const [popupMessage, setPopupMessage] = useState("");
+  const [showalertPopup, setShowalertPopup] = useState(false);
+
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
-    console.log("IN HANDLE SUBMIT")
     e.preventDefault(); // This prevents the React form submission
     
     const scriptURL = 'https://script.google.com/macros/s/AKfycbzam5LVsp4nLGCM0ZNk_-C_8u7VKFpqyNgMOCp93F-k97QJnsi8h7xE0-Nfbm-IPvnANw/exec'
     const form = e.target as HTMLFormElement
-    
-    console.log("FORM ", new FormData(form))
+
+    setEnquireModalOpen(false);
+    setIsLoading(true);
+
+    // // Show confirmation instantly (optimistic UI)
+    // alert("Thank you! Form is submitted");
     
     // Direct fetch call - no need for another event listener
     fetch(scriptURL, { 
@@ -77,11 +115,18 @@ export default function Index() {
     })
     .then(response => {
       console.log("Response", response)
-      alert("Thank you! Form is submitted");
+      setIsLoading(false)
+      
+      setPopupMessage("data submit successfully")
+      setShowalertPopup(true)
       // Optionally reset the form
       form.reset();
     })
-    .catch(error => console.log('Error!', error.message))
+    .catch(error => { 
+      setIsLoading(false);
+      setPopupMessage("Error! Something went wrong.");
+      setShowalertPopup(true);
+      console.log('Error!', error.message)})
   };
 
   const handleEnquireInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -91,37 +136,37 @@ export default function Index() {
     });
   };
 
-  const handleEnquireSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    console.log("Enquire form submitted:", enquireFormData);
+  // const handleEnquireSubmit = async (e: React.FormEvent) => {
+  //   e.preventDefault();
+  //   console.log("Enquire form submitted:", enquireFormData);
 
-    // Send data to backend/Google Sheets
-    try {
-      const response = await fetch("/api/enquiry", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(enquireFormData),
-      });
+  //   // Send data to backend/Google Sheets
+  //   try {
+  //     const response = await fetch("/api/enquiry", {
+  //       method: "POST",
+  //       headers: {
+  //         "Content-Type": "application/json",
+  //       },
+  //       body: JSON.stringify(enquireFormData),
+  //     });
 
-      if (response.ok) {
-        alert(
-          "Thank You! Your enquiry has been successfully submitted. Thank you for showing interest in us. One of our executives will get in touch with you.\n\nGet in touch with us at 8826693438\n\nWe'll use your information to contact you about our services and products.",
-        );
-        setEnquireFormData({ name: "", phone: "", email: "", message: "" });
-        setEnquireModalOpen(false);
-      } else {
-        alert("There was an error submitting your enquiry. Please try again.");
-      }
-    } catch (error) {
-      console.error("Error submitting enquiry:", error);
-      alert("There was an error submitting your enquiry. Please try again.");
-    }
-  };
+  //     if (response.ok) {
+  //       alert(
+  //         "Thank You! Your enquiry has been successfully submitted. Thank you for showing interest in us. One of our executives will get in touch with you.\n\nGet in touch with us at 9211633459\n\nWe'll use your information to contact you about our services and products.",
+  //       );
+  //       setEnquireFormData({ name: "", phone: "", email: "", message: "" });
+  //       setEnquireModalOpen(false);
+  //     } else {
+  //       alert("There was an error submitting your enquiry. Please try again.");
+  //     }
+  //   } catch (error) {
+  //     console.error("Error submitting enquiry:", error);
+  //     alert("There was an error submitting your enquiry. Please try again.");
+  //   }
+  // };
 
   const handleWhatsAppClick = () => {
-    const phoneNumber = "918826693438"; // WhatsApp number
+    const phoneNumber = "919211633459"; // WhatsApp number
     const message =
       "Hi, I'm interested in Godrej Majesty project. Please share more details.";
     const whatsappUrl = `https://wa.me/${phoneNumber}?text=${encodeURIComponent(message)}`;
@@ -130,13 +175,59 @@ export default function Index() {
 
   return (
     <div className="min-h-screen bg-white">
+
+       {/* {isLoading && (
+        <div className="loader">Loading...</div> 
+      )} */}
+      {/* {isLoading && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50 backdrop-blur-sm">
+          <div className="flex flex-col items-center space-y-4">
+            <div className="w-12 h-12 border-4 border-emerald-500 border-t-transparent rounded-full animate-spin"></div>
+            <p className="text-white text-lg font-medium">Submitting your enquiry...</p>
+          </div>
+        </div>
+      )} */}
+
+      {isLoading && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-60 backdrop-blur-md">
+          <div className="flex flex-col items-center space-y-4">
+            <div className="w-16 h-16 border-[6px] border-emerald-500 border-t-transparent rounded-full animate-spin"></div>
+            <p className="text-white text-xl font-semibold">Submitting your enquiry...</p>
+          </div>
+        </div>
+      )}
+
+
+      {/* {showPopup && (
+        <div className="popup">
+          <div className="popup-content">
+            <p>{popupMessage}</p>
+            <Button onClick={() => setShowPopup(false)}>Close</Button>
+          </div>
+        </div>
+      )} */}
+
       {/* Navigation Header */}
       <header className="fixed top-0 left-0 right-0 z-50 bg-white/95 backdrop-blur-sm border-b border-gray-100">
         <div className="container mx-auto px-4 lg:px-8">
           <div className="flex items-center justify-between h-16">
-            <div className="flex items-center space-x-2">
+            {/* <div className="flex items-center space-x-2">
               <div className="w-8 h-8 bg-gradient-to-br from-luxury-500 to-luxury-600 rounded-lg flex items-center justify-center">
                 <Home className="w-5 h-5 text-white" />
+              </div>
+              <span className="text-xl font-bold text-gray-900">
+                Godrej Majesty
+              </span>
+            </div> */}
+
+            <div className="flex items-center space-x-2">
+              <div className="w-13 h-11 rounded-lg overflow-hidden flex items-center justify-center">
+                <img
+                  // src="/images/carousel/download.jpg"
+                  src="/images/carousel/godrej.png"
+                  alt="Godrej Logo"
+                  className="object-contain w-full h-full"
+                />
               </div>
               <span className="text-xl font-bold text-gray-900">
                 Godrej Majesty
@@ -191,7 +282,7 @@ export default function Index() {
 
               <Button
                 className="hidden sm:flex bg-luxury-500 hover:bg-luxury-600 text-white"
-                onClick={() => window.open("tel:+918826693438")}
+                onClick={() => window.open("tel:+919211633459")}
               >
                 <Phone className="w-4 h-4 mr-2" />
                 Call Now
@@ -268,7 +359,7 @@ export default function Index() {
                 <Button
                   className="bg-luxury-500 hover:bg-luxury-600 text-white mt-2"
                   onClick={() => {
-                    window.open("tel:+918826693438");
+                    window.open("tel:+919211633459");
                     setMobileMenuOpen(false);
                   }}
                 >
@@ -286,14 +377,27 @@ export default function Index() {
         id="home"
         className="relative h-screen flex items-center justify-center overflow-hidden"
       >
-        <div className="absolute inset-0 bg-gradient-to-r from-gray-900/80 to-gray-900/40 z-10"></div>
+        {/* <div className="absolute inset-0 bg-gradient-to-r from-gray-900/80 to-gray-900/40 z-10"></div>
         <div
           className="absolute inset-0 bg-cover bg-center bg-no-repeat"
           style={{
             backgroundImage:
               "url('https://cdn.builder.io/api/v1/image/assets%2F7c5f6e05ab574b11a385ab0e313c151e%2F88f66aff39fe447b87611427efbf6392?format=webp&width=2000')",
           }}
-        ></div>
+        ></div> */}
+
+        <div className="absolute inset-0 bg-gradient-to-r from-gray-900/80 to-gray-900/40 z-10"></div>
+        {images.map((image, index) => (
+          <div
+            key={index}
+            className={`absolute inset-0 bg-cover bg-center bg-no-repeat transition-opacity duration-300 ${
+              index === currentImageIndex ? 'opacity-100' : 'opacity-0'
+            }`}
+            style={{
+              backgroundImage: `url('${image}')`,
+            }}
+          />
+        ))}
 
         <div className="relative z-20 text-center text-white max-w-4xl mx-auto px-4">
           <Badge className="mb-6 bg-luxury-500/20 text-luxury-200 border-luxury-500/30 text-sm px-4 py-2">
@@ -301,7 +405,7 @@ export default function Index() {
           </Badge>
           <h1 className="text-5xl lg:text-7xl font-bold mb-6 leading-tight">
             Godrej Majesty
-            <span className="block text-luxury-400">
+            <span className="block text-2xl lg:text-2xl text-luxury-400 mt-2">
               Sector 12, Greater Noida (W), Phase 2
             </span>
           </h1>
@@ -879,7 +983,7 @@ export default function Index() {
                   </div>
                   <div>
                     <div className="font-semibold">Sales Hotline</div>
-                    <div className="text-gray-300">+91 8826693438</div>
+                    <div className="text-gray-300">+91 9211633459</div>
                   </div>
                 </div>
 
@@ -955,6 +1059,43 @@ export default function Index() {
                 </form>
               </CardContent>
             </Card>
+
+            {showalertPopup && (
+              <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
+                <div className="bg-white px-8 py-6 rounded-xl shadow-2xl text-center max-w-md w-full animate-fade-in">
+                  <h2 className="text-2xl font-bold mb-2" style={{ color: '#3BC489' }}>
+                    Thank You!
+                  </h2>
+                  <p className="text-gray-700 mb-4">
+                    One of our executives will connect with you shortly.<br />
+                    📞 Need immediate assistance?<br />
+                    Feel free to call us at{" "}
+                    <a href="tel:+919211633459" className="text-blue-600 underline hover:text-blue-800">
+                      +91 92116 33459
+                    </a>
+                    <br />
+                  </p>
+                  <button
+                    onClick={() => setShowalertPopup(false)}
+                    className="px-6 py-2 text-white rounded-lg transition duration-200 hover:brightness-110"
+                    style={{ backgroundColor: '#E69119' }}
+                  >
+                    Close
+                  </button>
+                </div>
+              </div>
+            )}
+
+            {/* {isLoading && (
+              <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
+                <div className="bg-white p-6 rounded-lg shadow-xl text-center max-w-sm w-full flex flex-col items-center">
+                  <div className="w-10 h-10 border-4 border-emerald-500 border-t-transparent rounded-full animate-spin mb-4"></div>
+                  <p className="text-gray-800 font-medium text-lg">Submitting your enquiry...</p>
+                </div>
+              </div>
+            )} */}
+
+            
           </div>
         </div>
       </section>
@@ -1042,15 +1183,22 @@ export default function Index() {
             <div>
               <h4 className="font-semibold mb-4">Contact Info</h4>
               <div className="space-y-2 text-gray-400">
-                <div>+91 8826693438</div>
+                <div>+91 9211633459</div>
                 <div> sales@godrejmajesty.com</div>
                 <div>Sector 12, Greater Noida (W), UP 201310</div>
               </div>
             </div>
           </div>
 
+          {/* 👉 Disclaimer Section */}
+          <div className="mt-10 text-sm text-gray-400 space-y-4 leading-relaxed">
+            <p>
+              <strong>Disclaimer:</strong> The information provided on this website is intended exclusively for informational purposes and should not be construed as an offer of services. This site is managed by a RERA authorized affiliate partner / real estate agent (for multiple real estate developers) namely <strong>The House of Properties</strong>. The pricing information presented on this website is subject to alteration without advance notification, and the assurance of property availability cannot be guaranteed. The images showcased on this website are for representational purposes only and may not accurately reflect the actual properties. We may share your data with Uttar Pradesh Real Estate Regulatory Authority (RERA) registered Developers for further processing as necessary. Additionally, we may send updates and information to the mobile number or email address registered with us. All rights reserved. The content, design, and information on this website are protected by copyright and other intellectual property rights. Any unauthorized use or reproduction of the content may violate applicable laws. For accurate and up-to-date information regarding services, pricing, availability, and any other details, it is recommended to contact us directly through the provided contact information on this website. Thank you for visiting our website.
+            </p>
+          </div>
+
           <div className="border-t border-gray-700 mt-8 pt-8 text-center text-gray-400">
-            <p>&copy; 2024 Godrej Majesty. All rights reserved.</p>
+            <p>&copy; Godrej Majesty. All rights reserved.</p>
           </div>
         </div>
       </footer>
@@ -1066,52 +1214,64 @@ export default function Index() {
 
       {/* Enquire Now Modal */}
       <Dialog open={enquireModalOpen} onOpenChange={setEnquireModalOpen}>
-        <DialogContent className="sm:max-w-md">
+        <DialogContent className="sm:max-w-2xl">
           <DialogHeader>
             <DialogTitle className="text-2xl font-bold text-center text-gray-900">
               Enquire About Godrej Majesty
             </DialogTitle>
           </DialogHeader>
-          <form   method="post" name="contact-form"  onSubmit={handleSubmit} className="space-y-4 mt-4">
-            <div>
-              <Input
-                name="Name"
-                placeholder="Your Name *"
-                required
-                className="w-full"
-              />
+          <div className="flex flex-col md:flex-row bg-white rounded-lg shadow-lg overflow-hidden max-w-5xl mx-auto">
+            {/* Left Side: Promise Section */}
+            <div className="bg-white p-8 md:w-1/2 border-r">
+              <h2 className="text-2xl font-semibold mb-6 text-[#003B8F]">Our Commitments</h2>
+              <div className="space-y-6 text-[#E69119]">
+                <div className="flex items-center space-x-4">
+                  <PhoneCall className="w-6 h-6" />
+                  <p className="font-medium text-black text-base">Quick Callback Guaranteed</p>
+                </div>
+                <div className="flex items-center space-x-4">
+                  <Car className="w-6 h-6" />
+                  <p className="font-medium text-black text-base">Complimentary Site Visit</p>
+                </div>
+                <div className="flex items-center space-x-4">
+                  <IndianRupee className="w-6 h-6" />
+                  <p className="font-medium text-black text-base">Best Price Assured</p>
+                </div>
+              </div>
             </div>
-            <div>
-              <Input
-                name="Phone"
-                type="tel"
-                placeholder="Phone Number *"
-                required
-                className="w-full"
-              />
+
+            {/* Right Side: Form Section */}
+            <div className="p-8 md:w-1/2">
+              <h2 className="text-2xl font-semibold text-center text-[#003B8F]">Get Pricing Details Instantly</h2>
+              <p className="text-center text-sm mt-2 text-gray-700">
+                Fill the form below and unlock exclusive{" "}
+                <span className="text-red-600 font-semibold">limited-time offers!</span>
+              </p>
+
+              <form method="post" name="contact-form" onSubmit={handleSubmit} className="space-y-5 mt-6">
+                <Input name="Name" placeholder="Your Full Name *" required className="w-full" />
+                <Input name="Phone" type="tel" placeholder="Phone Number *" required className="w-full" />
+                <Input name="Email" type="email" placeholder="Email Address" className="w-full" />
+                <Input name="Message" placeholder="Message (Optional)" className="w-full" />
+
+                <div className="flex items-start space-x-2 text-sm text-gray-600">
+                  <input type="checkbox" required className="mt-1 accent-[#E69119]" />
+                  <label>
+                    I agree to the use of my information as outlined in the{" "}
+                    <a href="/privacy-policy" className="underline text-[#E69119]">privacy policy</a>.
+                  </label>
+                </div>
+
+                <Button
+                  type="submit"
+                  className="w-full bg-[#E69119] hover:bg-[#d67e11] text-white py-3 text-lg rounded-md"
+                >
+                  Submit Enquiry
+                </Button>
+              </form>
             </div>
-            <div>
-              <Input
-                name="Email"
-                type="email"
-                placeholder="Email Address"
-                className="w-full"
-              />
-            </div>
-            <div>
-              <Input
-                name="Message"
-                placeholder="Message (Optional)"
-                className="w-full"
-              />
-            </div>
-            <Button
-              type="submit"
-              className="w-full bg-luxury-500 hover:bg-luxury-600 text-white py-3 text-lg"
-            >
-              Submit Enquiry
-            </Button>
-          </form>
+          </div>
+
         </DialogContent>
       </Dialog>
     </div>

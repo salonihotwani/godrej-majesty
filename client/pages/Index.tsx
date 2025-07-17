@@ -67,6 +67,8 @@ export default function Index() {
 
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [enquireModalOpen, setEnquireModalOpen] = useState(false);
+  const [videoModalOpen, setVideoModalOpen] = useState(false);
+  const [showModal, setShowModal] = useState(false);
   const [enquireFormData, setEnquireFormData] = useState({
     name: "",
     phone: "",
@@ -211,27 +213,28 @@ export default function Index() {
       <header className="fixed top-0 left-0 right-0 z-50 bg-white/95 backdrop-blur-sm border-b border-gray-100">
         <div className="container mx-auto px-4 lg:px-8">
           <div className="flex items-center justify-between h-16">
-            {/* <div className="flex items-center space-x-2">
-              <div className="w-8 h-8 bg-gradient-to-br from-luxury-500 to-luxury-600 rounded-lg flex items-center justify-center">
-                <Home className="w-5 h-5 text-white" />
-              </div>
-              <span className="text-xl font-bold text-gray-900">
-                Godrej Majesty
-              </span>
-            </div> */}
 
             <div className="flex items-center space-x-2">
-              <div className="w-13 h-11 rounded-lg overflow-hidden flex items-center justify-center">
+              {/* First Logo */}
+              <div className="w-15 h-11 rounded-lg overflow-hidden flex items-center justify-center">
                 <img
-                  // src="/images/carousel/download.jpg"
                   src="/images/carousel/godrej.png"
                   alt="Godrej Logo"
                   className="object-contain w-full h-full"
                 />
               </div>
-              <span className="text-xl font-bold text-gray-900">
-                Godrej Majesty
-              </span>
+
+              {/* Second Logo */}
+              <div className="w-15 h-12 rounded-lg overflow-hidden flex items-center justify-center">
+                <img
+                  src="/images/carousel/logo.jpeg"
+                  alt="Godrej Logo"
+                  className="object-contain w-full h-full"
+                />
+              </div>
+
+              {/* Optional text */}
+              {/* <span className="text-xl font-bold text-gray-900">Godrej Majesty</span> */}
             </div>
 
             {/* Desktop Navigation */}
@@ -406,7 +409,7 @@ export default function Index() {
           <h1 className="text-5xl lg:text-7xl font-bold mb-6 leading-tight">
             Godrej Majesty
             <span className="block text-2xl lg:text-2xl text-luxury-400 mt-2">
-              Sector 12, Greater Noida (W), Phase 2
+              Sector 12, Greater Noida (W), <br></br>Phase 2
             </span>
           </h1>
           <p className="text-xl lg:text-2xl mb-8 text-gray-200 max-w-2xl mx-auto">
@@ -483,7 +486,7 @@ export default function Index() {
                   1450-3200 Sq.Ft
                 </h3>
                 <p className="text-gray-600">
-                  Spacious 2, 3 & 4 BHK apartments
+                  Spacious 3 & 4 BHK apartments
                 </p>
               </CardContent>
             </Card>
@@ -600,6 +603,57 @@ export default function Index() {
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                  {/* Walkthrough Video Section */}
+            <div className="group relative overflow-hidden rounded-xl shadow-lg hover:shadow-2xl transition-all duration-300 hover:-translate-y-2">
+              <div className="aspect-[4/3] overflow-hidden">
+                <video
+                  controls
+                  className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                  poster="/images/carousel/logo.jpeg"
+                >
+                  <source src="/images/carousel/sample.mp4" type="video/mp4" />
+                  Your browser does not support the video tag.
+                </video>
+              </div>
+
+              <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                <div className="absolute bottom-4 left-4 right-4">
+                  <h3 className="text-white font-semibold text-lg mb-2">
+                    Walkthrough Video
+                  </h3>
+                  <button
+                    onClick={() => setShowModal(true)}
+                    className="bg-white/20 text-white border-white/30 hover:bg-white hover:text-gray-900 px-4 py-2 rounded text-sm flex items-center"
+                  >
+                    <ExternalLink className="w-4 h-4 mr-2" />
+                    Play Fullscreen
+                  </button>
+                </div>
+              </div>
+            </div>
+
+            {/* Modal */}
+            {showModal && (
+              <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-90 p-4">
+                <div className="relative w-full max-w-5xl">
+                  <button
+                    onClick={() => setShowModal(false)}
+                    className="absolute top-4 right-4 text-white hover:text-red-500 z-50"
+                  >
+                    <X className="w-6 h-6" />
+                  </button>
+                  <video
+                    autoPlay
+                    controls
+                    className="w-full h-[80vh] object-contain rounded"
+                    poster="/images/carousel/logo.jpeg"
+                  >
+                    <source src="/images/carousel/sample.mp4" type="video/mp4" />
+                    Your browser does not support the video tag.
+                  </video>
+                </div>
+              </div>
+            )}
             {[
               {
                 src: "https://cdn.builder.io/api/v1/image/assets%2F7c5f6e05ab574b11a385ab0e313c151e%2F88f66aff39fe447b87611427efbf6392?format=webp&width=600",
@@ -983,7 +1037,7 @@ export default function Index() {
                   </div>
                   <div>
                     <div className="font-semibold">Sales Hotline</div>
-                    <div className="text-gray-300">+91 9211633459</div>
+                    <div className="text-gray-300">+91 9211633459, +91 7291053549</div>
                   </div>
                 </div>
 
@@ -1004,7 +1058,7 @@ export default function Index() {
                   <div>
                     <div className="font-semibold">Sales Office</div>
                     <div className="text-gray-300">
-                      Sector 12, Greater Noida (W), UP 201310
+                      Sector 12, Greater Noida (W), UP 203207
                     </div>
                   </div>
                 </div>
@@ -1071,9 +1125,12 @@ export default function Index() {
                     📞 Need immediate assistance?<br />
                     Feel free to call us at{" "}
                     <a href="tel:+919211633459" className="text-blue-600 underline hover:text-blue-800">
-                      +91 92116 33459
+                      9211633459
+                    </a>{" "}
+                    or{" "}
+                    <a href="tel:+917291053549" className="text-blue-600 underline hover:text-blue-800">
+                      7291053549
                     </a>
-                    <br />
                   </p>
                   <button
                     onClick={() => setShowalertPopup(false)}
@@ -1183,9 +1240,9 @@ export default function Index() {
             <div>
               <h4 className="font-semibold mb-4">Contact Info</h4>
               <div className="space-y-2 text-gray-400">
-                <div>+91 9211633459</div>
+                <div>+91 9211633459, +91 7291053549</div>
                 <div> sales@godrejmajesty.com</div>
-                <div>Sector 12, Greater Noida (W), UP 201310</div>
+                <div>Sector 12, Greater Noida (W), UP 203207</div>
               </div>
             </div>
           </div>
@@ -1193,12 +1250,12 @@ export default function Index() {
           {/* 👉 Disclaimer Section */}
           <div className="mt-10 text-sm text-gray-400 space-y-4 leading-relaxed">
             <p>
-              <strong>Disclaimer:</strong> The information provided on this website is intended exclusively for informational purposes and should not be construed as an offer of services. This site is managed by a RERA authorized affiliate partner / real estate agent (for multiple real estate developers) namely <strong>The House of Properties</strong>. The pricing information presented on this website is subject to alteration without advance notification, and the assurance of property availability cannot be guaranteed. The images showcased on this website are for representational purposes only and may not accurately reflect the actual properties. We may share your data with Uttar Pradesh Real Estate Regulatory Authority (RERA) registered Developers for further processing as necessary. Additionally, we may send updates and information to the mobile number or email address registered with us. All rights reserved. The content, design, and information on this website are protected by copyright and other intellectual property rights. Any unauthorized use or reproduction of the content may violate applicable laws. For accurate and up-to-date information regarding services, pricing, availability, and any other details, it is recommended to contact us directly through the provided contact information on this website. Thank you for visiting our website.
+              <strong>Disclaimer:</strong> The information provided on this website is intended exclusively for informational purposes and should not be construed as an offer of services. This site is managed by a RERA authorized affiliate partner / real estate agent (for multiple real estate developers) namely The House of Properties. The pricing information presented on this website is subject to alteration without advance notification, and the assurance of property availability cannot be guaranteed. The images showcased on this website are for representational purposes only and may not accurately reflect the actual properties. We may share your data with Uttar Pradesh Real Estate Regulatory Authority (RERA) registered Developers for further processing as necessary. Additionally, we may send updates and information to the mobile number or email address registered with us. All rights reserved. The content, design, and information on this website are protected by copyright and other intellectual property rights. Any unauthorized use or reproduction of the content may violate applicable laws. For accurate and up-to-date information regarding services, pricing, availability, and any other details, it is recommended to contact us directly through the provided contact information on this website. Thank you for visiting our website.
             </p>
           </div>
 
           <div className="border-t border-gray-700 mt-8 pt-8 text-center text-gray-400">
-            <p>&copy; Godrej Majesty. All rights reserved.</p>
+            <p>&copy; All rights reserved 2025.</p>
           </div>
         </div>
       </footer>
@@ -1212,43 +1269,45 @@ export default function Index() {
         <MessageCircle className="w-6 h-6" />
       </button>
 
-      {/* Enquire Now Modal */}
       <Dialog open={enquireModalOpen} onOpenChange={setEnquireModalOpen}>
-        <DialogContent className="sm:max-w-2xl">
+        <DialogContent className="w-full max-w-3xl p-0 md:p-6"> {/* removed sm:max-w-2xl */}
           <DialogHeader>
             <DialogTitle className="text-2xl font-bold text-center text-gray-900">
               Enquire About Godrej Majesty
             </DialogTitle>
           </DialogHeader>
-          <div className="flex flex-col md:flex-row bg-white rounded-lg shadow-lg overflow-hidden max-w-5xl mx-auto">
-            {/* Left Side: Promise Section */}
-            <div className="bg-white p-8 md:w-1/2 border-r">
-              <h2 className="text-2xl font-semibold mb-6 text-[#003B8F]">Our Commitments</h2>
-              <div className="space-y-6 text-[#E69119]">
-                <div className="flex items-center space-x-4">
-                  <PhoneCall className="w-6 h-6" />
-                  <p className="font-medium text-black text-base">Quick Callback Guaranteed</p>
+
+          <div className="flex flex-col md:flex-row bg-white rounded-lg shadow-lg overflow-hidden w-full">
+            {/* Left Side: Commitments */}
+            <div className="bg-white p-6 md:p-8 md:w-1/2 border-b md:border-b-0 md:border-r">
+              <h2 className="text-xl md:text-2xl font-semibold mb-4 md:mb-6 text-[#003B8F]">Our Commitments</h2>
+              <div className="space-y-5 text-[#E69119]">
+                <div className="flex items-center space-x-3">
+                  <PhoneCall className="w-5 h-5 md:w-6 md:h-6" />
+                  <p className="font-medium text-black text-sm md:text-base">Quick Callback Guaranteed</p>
                 </div>
-                <div className="flex items-center space-x-4">
-                  <Car className="w-6 h-6" />
-                  <p className="font-medium text-black text-base">Complimentary Site Visit</p>
+                <div className="flex items-center space-x-3">
+                  <CarFront className="w-5 h-5 md:w-6 md:h-6" />
+                  <p className="font-medium text-black text-sm md:text-base">Complimentary Site Visit</p>
                 </div>
-                <div className="flex items-center space-x-4">
-                  <IndianRupee className="w-6 h-6" />
-                  <p className="font-medium text-black text-base">Best Price Assured</p>
+                <div className="flex items-center space-x-3">
+                  <IndianRupee className="w-5 h-5 md:w-6 md:h-6" />
+                  <p className="font-medium text-black text-sm md:text-base">Best Price Assured</p>
                 </div>
               </div>
             </div>
 
-            {/* Right Side: Form Section */}
-            <div className="p-8 md:w-1/2">
-              <h2 className="text-2xl font-semibold text-center text-[#003B8F]">Get Pricing Details Instantly</h2>
+            {/* Right Side: Form */}
+            <div className="p-6 md:p-8 md:w-1/2">
+              <h2 className="text-xl md:text-2xl font-semibold text-center text-[#003B8F]">
+                Get Pricing Details Instantly
+              </h2>
               <p className="text-center text-sm mt-2 text-gray-700">
                 Fill the form below and unlock exclusive{" "}
                 <span className="text-red-600 font-semibold">limited-time offers!</span>
               </p>
 
-              <form method="post" name="contact-form" onSubmit={handleSubmit} className="space-y-5 mt-6">
+              <form method="post" name="contact-form" onSubmit={handleSubmit} className="space-y-4 mt-5">
                 <Input name="Name" placeholder="Your Full Name *" required className="w-full" />
                 <Input name="Phone" type="tel" placeholder="Phone Number *" required className="w-full" />
                 <Input name="Email" type="email" placeholder="Email Address" className="w-full" />
@@ -1257,8 +1316,7 @@ export default function Index() {
                 <div className="flex items-start space-x-2 text-sm text-gray-600">
                   <input type="checkbox" required className="mt-1 accent-[#E69119]" />
                   <label>
-                    I agree to the use of my information as outlined in the{" "}
-                    <a href="/privacy-policy" className="underline text-[#E69119]">privacy policy</a>.
+                    I agree to the use of my information as outlined in the privacy policy.
                   </label>
                 </div>
 
@@ -1271,7 +1329,6 @@ export default function Index() {
               </form>
             </div>
           </div>
-
         </DialogContent>
       </Dialog>
     </div>

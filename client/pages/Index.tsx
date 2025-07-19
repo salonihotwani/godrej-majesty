@@ -1270,7 +1270,7 @@ export default function Index() {
       </button>
 
       <Dialog open={enquireModalOpen} onOpenChange={setEnquireModalOpen}>
-        <DialogContent className="w-full max-w-3xl p-0 md:p-6"> {/* removed sm:max-w-2xl */}
+        <DialogContent className="w-full max-w-3xl max-h-[90vh] overflow-y-auto p-4 md:p-6 rounded-xl">
           <DialogHeader>
             <DialogTitle className="text-2xl font-bold text-center text-gray-900">
               Enquire About Godrej Majesty
